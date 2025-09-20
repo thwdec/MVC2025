@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ลงทะเบียนเรียน</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        thead { background-color: #007bff; color: white; }
+        tbody tr:nth-child(even) { background-color: #f9f9f9; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        nav { margin-bottom: 20px; }
+        nav a { text-decoration: none; background: #28a745; color: white; padding: 10px 15px; border-radius: 5px; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>หน้าลงทะเบียนเรียน</h1>
+        <nav>
+            <a href="/profile">ดูโปรไฟล์ของฉัน</a>
+        </nav>
+
+        <h2>วิชาที่สามารถลงทะเบียนได้</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>รหัสวิชา</th>
+                    <th>ชื่อวิชา</th>
+                    <th>หน่วยกิต</th>
+                    <th>สถานะ</th>
+                    <th>รายละเอียด</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (notEnrolled.length > 0) { %>
+                    <% notEnrolled.forEach(subject => { %>
+                        <tr>
+                            <td><%= subject.SubjectID %></td>
+                            <td><%= subject.SubjectName %></td>
+                            <td><%= subject.Credits %></td>
+                            <td>
+                                <% if (subject.MaxCapacity == -1) { %>
+                                    เปิดรับไม่จำกัด
+                                <% } else { %>
+                                    <%= subject.CurrentEnrolled %> / <%= subject.MaxCapacity %>
+                                <% } %>
+                            </td>
+                            <td><a href="/subject/<%= subject.SubjectID %>">ดูรายละเอียด</a></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="5">ไม่มีรายวิชาให้ลงทะเบียนเพิ่มเติม</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <h2>วิชาที่กำลังเรียน</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>รหัสวิชา</th>
+                    <th>ชื่อวิชา</th>
+                    <th>หน่วยกิต</th>
+                    <th>อาจารย์ผู้สอน</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (enrolled.length > 0) { %>
+                    <% enrolled.forEach(course => { %>
+                        <tr>
+                            <td><%= course.SubjectID %></td>
+                            <td><%= course.SubjectName %></td>
+                            <td><%= course.Credits %></td>
+                            <td><%= course.Instructor %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="4">ไม่มีรายวิชาที่กำลังเรียน</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <h2>วิชาที่เรียนจบแล้ว</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>รหัสวิชา</th>
+                    <th>ชื่อวิชา</th>
+                    <th>หน่วยกิต</th>
+                    <th>เกรดที่ได้รับ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (completed.length > 0) { %>
+                    <% completed.forEach(course => { %>
+                        <tr>
+                            <td><%= course.SubjectID %></td>
+                            <td><%= course.SubjectName %></td>
+                            <td><%= course.Credits %></td>
+                            <td><b><%= course.grade %></b></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="4">ไม่มีรายวิชาที่เรียนจบแล้ว</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

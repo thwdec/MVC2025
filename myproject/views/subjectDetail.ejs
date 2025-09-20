@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายละเอียดวิชา: <%= subject.SubjectName %></title>
+    <style>
+        body { font-family: sans-serif; background-color: #f9f9f9; display: flex; justify-content: center; padding-top: 40px; }
+        .container { width: 80%; max-width: 800px; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h1 { color: #333; }
+        .detail-grid { display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-top: 1.5rem; }
+        .detail-grid strong { color: #555; }
+        .status { padding: 0.5rem 1rem; border-radius: 20px; color: white; font-weight: bold; text-align: center; }
+        .status.available { background-color: #28a745; } /* สีเขียว: ว่าง */
+        .status.full { background-color: #dc3545; } /* สีแดง: เต็ม */
+        .actions { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        button, a { text-decoration: none; display: inline-block; text-align: center; padding: 0.8rem; border-radius: 5px; cursor: pointer; border: none; font-size: 16px; }
+        button { background-color: #007bff; color: white; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        a.back-link { background-color: #6c757d; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><%= subject.SubjectName %></h1>
+        <p>รหัสวิชา: <%= subject.SubjectID %></p>
+        
+        <hr>
+
+        <div class="detail-grid">
+            <strong>อาจารย์ผู้สอน:</strong>
+            <span><%= subject.Instructor %></span>
+
+            <strong>หน่วยกิต:</strong>
+            <span><%= subject.Credits %> หน่วยกิต</span>
+
+            <% if (subject.PrerequisiteID) { %>
+                <strong>วิชาบังคับก่อน:</strong>
+                <span><%= subject.PrerequisiteID %></span>
+            <% } %>
+
+            <strong>สถานะการลงทะเบียน:</strong>
+            <div>
+                <% 
+                    const isFull = subject.MaxCapacity != -1 && parseInt(subject.CurrentEnrolled) >= parseInt(subject.MaxCapacity);
+                %>
+                <% if (subject.MaxCapacity == -1) { %>
+                    <span class="status available">เปิดรับไม่จำกัด</span>
+                    <span>(ลงทะเบียนแล้ว <%= subject.CurrentEnrolled %> คน)</span>
+                <% } else { %>
+                    <span class="status <%= isFull ? 'full' : 'available' %>">
+                        <%= isFull ? 'เต็มแล้ว' : 'ยังว่าง' %>
+                    </span>
+                    <span>(<%= subject.CurrentEnrolled %> / <%= subject.MaxCapacity %> คน)</span>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="actions">
+            <form action="/enroll" method="POST">
+                <input type="hidden" name="subjectId" value="<%= subject.SubjectID %>">
+                
+                <% if (parseInt(subject.MaxCapacity) != -1 && parseInt(subject.CurrentEnrolled) >= parseInt(subject.MaxCapacity)) { %>
+                    <button type="submit" disabled>รายวิชานี้เต็มแล้ว</button>
+                <% } else { %>
+                    <button type="submit">ลงทะเบียนเรียนวิชานี้</button>
+                <% } %>
+            </form>
+
+            <a href="/register" class="back-link">กลับไปหน้ารายวิชาทั้งหมด</a>
+        </div>
+    </div>
+</body>
+</html>

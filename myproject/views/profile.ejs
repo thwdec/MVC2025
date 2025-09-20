@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>โปรไฟล์ของ <%= student.FirstName %></title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; }
+        .course-list { list-style: none; padding: 0; }
+        .course-item { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .course-details { flex-grow: 1; }
+        .course-details strong { font-size: 1.1em; color: #0056b3; }
+        .course-status { font-weight: bold; padding: 5px 10px; border-radius: 15px; color: white; }
+        .status-enrolled { background-color: #17a2b8; }
+        .status-completed { background-color: #28a745; }
+        nav { margin-bottom: 20px; }
+        nav a { text-decoration: none; background: #007bff; color: white; padding: 10px 15px; border-radius: 5px; margin-right: 10px; }
+        nav a:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>โปรไฟล์ของ: <%= student.Prefix %><%= student.FirstName %> <%= student.LastName %></h1>
+        <p>รหัสนักเรียน: <%= student.StudentID %></p>
+        
+        <nav>
+            <a href="/register">ไปหน้าลงทะเบียน</a>
+            <a href="/logout">ออกจากระบบ</a>
+        </nav>
+
+        <hr>
+
+        <h2>วิชาที่ลงทะเบียนแล้ว</h2>
+        <% if (courses.length > 0) { %>
+            <ul class="course-list">
+                <% courses.forEach(course => { %>
+                    <li class="course-item">
+                        <div class="course-details">
+                            <strong><%= course.SubjectName %></strong><br>
+                            <span>รหัสวิชา: <%= course.SubjectID %> | หน่วยกิต: <%= course.Credits %></span>
+                        </div>
+                        <% if (course.status === 'Completed') { %>
+                            <span class="course-status status-completed">เรียนจบแล้ว (เกรด: <%= course.grade %>)</span>
+                        <% } else { %>
+                            <span class="course-status status-enrolled">กำลังเรียน</span>
+                        <% } %>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>คุณยังไม่ได้ลงทะเบียนเรียนในรายวิชาใดๆ</p>
+        <% } %>
+    </div>
+</body>
+</html>
